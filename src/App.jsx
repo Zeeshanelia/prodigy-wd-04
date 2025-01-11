@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { solveSudoku } from "./utils/sudokuSolver";
 
-
 function App() {
-  // Initial board with some numbers filled and others as 0 (empty)
+  // Initialize board with some numbers filled and others as 0 (empty)
   const [board, setBoard] = useState(
-    Array(9).fill(Array(9).fill(0))
+    Array(9).fill().map(() => Array(9).fill(0))
   );
 
   // Update the board when a user enters a number
   const handleInputChange = (e, row, col) => {
     const value = e.target.value;
     if (value === "" || /^[1-9]$/.test(value)) {
-      const newBoard = [...board];
+      const newBoard = [...board];  // Create a shallow copy of the board
+      newBoard[row] = [...board[row]];  // Create a new row copy to avoid mutation
       newBoard[row][col] = value ? parseInt(value, 10) : 0;
       setBoard(newBoard);
     }
@@ -20,9 +20,9 @@ function App() {
 
   // Solve the Sudoku puzzle when the user clicks 'Solve'
   const handleSolve = () => {
-    const newBoard = JSON.parse(JSON.stringify(board)); // Deep copy
+    const newBoard = board.map(row => [...row]);  // Deep copy of the board
     solveSudoku(newBoard);
-    setBoard(newBoard);
+    setBoard(newBoard);  // Update state with the solved board
   };
 
   return (
